@@ -1,59 +1,60 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 
-function Home({ journalEntry, users }) {
+function Home({ journalEntry, currentUser }) {
+	const navigate = useNavigate();
+
 	const [isLoading, setIsLoading] = useState(true);
 	const [thisWeek, setThisWeek] = useState([]);
 	const [thisWeeksEntries, setThisWeeksEntries] = useState([]);
-	const [userInformation, setUserInformation] = useState(null);
-	const [daysToCatchUp, setDaysToCatchUp] = useState(7);
+	const [currentDay, setCurrentDay] = useState(new Date());
 
-	const currentDay = new Date();
+	const [daysToCatchUp] = useState(7);
 
-	const today = `${currentDay.getFullYear()}-${(currentDay.getMonth() + 1).toString().padStart(2, "0")}-${currentDay.getDate().toString().padStart(2, "0")}`;
+	useMemo(() => {
+		setCurrentDay(new Date());
+	}, []);
 
-	function getThisWeek() {
-		const dayOfTheWeek = currentDay.getDay();
-		const difference = dayOfTheWeek === 0 ? -6 : -(dayOfTheWeek - 1);
-		const dates = [];
-
-		for (let i = difference; i <= 0; i++) {
-			const newDate = new Date(
-				currentDay.getFullYear(),
-				currentDay.getMonth(),
-				currentDay.getDate() + i
-			);
-			const formattedDate = `${newDate.getFullYear()}-${(newDate.getMonth() + 1).toString().padStart(2, "0")}-${newDate.getDate().toString().padStart(2, "0")}`;
-			dates.push(formattedDate);
-		}
-
-		setThisWeek(dates);
-	}
-
-	const getThisWeeksEntries = () => {
-		const thisWeeksEntries = thisWeek
-			.map((date) => {
-				return journalEntry.find((entry) => entry.dateLogged === date);
-			})
-			.filter(Boolean);
-
-		setThisWeeksEntries(thisWeeksEntries);
-	};
-
-	// find currentUser's information
-	const getCurrentUser = (userName) => {
-		const user = users.find((user) => user.userName === userName);
-		setUserInformation(user);
-	};
+	// const today = `${currentDay.getFullYear()}-${(currentDay.getMonth() + 1).toString().padStart(2, "0")}-${currentDay.getDate().toString().padStart(2, "0")}`;
 
 	useEffect(() => {
+		function getThisWeek() {
+			const dayOfTheWeek = currentDay.getDay();
+			const difference = dayOfTheWeek === 0 ? -6 : -(dayOfTheWeek - 1);
+			const dates = [];
+
+			for (let i = difference; i <= 0; i++) {
+				const newDate = new Date(
+					currentDay.getFullYear(),
+					currentDay.getMonth(),
+					currentDay.getDate() + i
+				);
+				const formattedDate = `${newDate.getFullYear()}-${(newDate.getMonth() + 1).toString().padStart(2, "0")}-${newDate.getDate().toString().padStart(2, "0")}`;
+				dates.push(formattedDate);
+			}
+
+			setThisWeek(dates);
+		}
+
 		getThisWeek();
+
+		const getThisWeeksEntries = () => {
+			const thisWeeksEntries = thisWeek
+				.map((date) => {
+					return journalEntry.find((entry) => entry.dateLogged === date);
+				})
+				.filter(Boolean);
+
+			setThisWeeksEntries(thisWeeksEntries);
+		};
+
 		getThisWeeksEntries();
-		getCurrentUser("abigailHartnett");
+
 		setIsLoading(false);
-	}, [journalEntry]);
+	}, [currentDay, thisWeek, journalEntry]);
 
 	// find user's starting weight
-	const startingWeight = userInformation?.startingWeight;
+	const startingWeight = currentUser?.startingWeight;
 
 	// find user's most recent weight entry
 	const dateEntries = journalEntry.map((entry) => entry.dateLogged);
@@ -63,13 +64,13 @@ function Home({ journalEntry, users }) {
 	).weightEntry;
 
 	// find user's goal weight
-	const goalWeight = userInformation?.goalWeight;
+	const goalWeight = currentUser?.goalWeight;
 
 	// fid user's start date
-	const startDate = new Date(userInformation?.startDate);
+	const startDate = new Date(currentUser?.startDate);
 
 	// find user's goal date
-	const goalDate = new Date(userInformation?.goalDate);
+	const goalDate = new Date(currentUser?.goalDate);
 
 	// find user's total days to lose
 	const totalDaysToLose = Math.round(
@@ -82,7 +83,7 @@ function Home({ journalEntry, users }) {
 	);
 
 	// find user's days left to lose
-	const daysLeft = Math.round((goalDate - currentDay) / (1000 * 60 * 60 * 24));
+	// const daysLeft = Math.round((goalDate - currentDay) / (1000 * 60 * 60 * 24));
 
 	// find user's total calories to lose based on their goal weight
 	const totalCaloriesToLose =
@@ -161,6 +162,12 @@ function Home({ journalEntry, users }) {
 					</div>
 				</div>
 			</div>
+			<button
+				className="p-4 bg-black text-white font-semibold mt-4 w-full"
+				onClick={() => navigate("/data/new-entry")}
+			>
+				Log an entry
+			</button>
 		</div>
 	);
 }
