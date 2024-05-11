@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Home({ journalEntry, currentUser }) {
+function Home({ journalEntries, currentUser }) {
 	const navigate = useNavigate();
 
 	const [isLoading, setIsLoading] = useState(true);
@@ -37,11 +37,13 @@ function Home({ journalEntry, currentUser }) {
 		}
 
 		getThisWeek();
+	}, [currentDay]);
 
+	useEffect(() => {
 		const getThisWeeksEntries = () => {
 			const thisWeeksEntries = thisWeek
 				.map((date) => {
-					return journalEntry.find((entry) => entry.dateLogged === date);
+					return journalEntries.find((entry) => entry.dateLogged === date);
 				})
 				.filter(Boolean);
 
@@ -51,15 +53,15 @@ function Home({ journalEntry, currentUser }) {
 		getThisWeeksEntries();
 
 		setIsLoading(false);
-	}, [currentDay, thisWeek, journalEntry]);
+	}, [thisWeek, journalEntries]);
 
 	// find user's starting weight
 	const startingWeight = currentUser?.startingWeight;
 
 	// find user's most recent weight entry
-	const dateEntries = journalEntry.map((entry) => entry.dateLogged);
+	const dateEntries = journalEntries.map((entry) => entry.dateLogged);
 	const mostRecentDate = dateEntries.sort().reverse()[0];
-	const mostRecentWeight = journalEntry.find(
+	const mostRecentWeight = journalEntries.find(
 		(entry) => entry.dateLogged === mostRecentDate
 	).weightEntry;
 
@@ -98,7 +100,7 @@ function Home({ journalEntry, currentUser }) {
 	);
 
 	// find user's current progress
-	const currentProgress = journalEntry
+	const currentProgress = journalEntries
 		.map((entry) => entry.deficitEntry)
 		.reduce((acc, curr) => {
 			return acc + curr;
@@ -131,43 +133,68 @@ function Home({ journalEntry, currentUser }) {
 		offTargetBy / daysToCatchUp + idealDailyDeficit
 	);
 
+	const sortedEntries = journalEntries.sort((a, b) => {
+		const dateA = new Date(a.dateLogged);
+		const dateB = new Date(b.dateLogged);
+
+		return dateB - dateA;
+	});
+
+	const logEntries = () => {
+		return sortedEntries.map((entry) => (
+			<div
+				key={entry.id}
+				className="flex justify-between border-b border-t-0 border-r-0 border-l-0 solid border-black py-2"
+			>
+				<div>{entry.dateLogged}</div>
+				<div>{entry.weightEntry}</div>
+				<div>{entry.deficitEntry}</div>
+			</div>
+		));
+	};
+
 	if (isLoading) {
 		return <div>Loading...</div>;
 	}
 
 	return (
-		<div className="mt-2">
-			<div className="text-center">
-				<p className="mb-2">{lostThisWeek} lb lost this week</p>
-				<h1 className="text-5xl font-bold">{thisWeeksDeficit}</h1>
-				<p>Behind by {offTargetBy} calories</p>
-				<p className="mt-2">
-					<span>{dailyProgressToCatchUpByDate} </span>
-					calories to catch up in {daysToCatchUp} days
-				</p>
-			</div>
-			<div className="flex justify-center gap-10 mt-4">
+		<div className="m-4 max-w-md">
+			<div className="flex">
 				<div>
-					<p>weigh in</p>
-					<div className="flex gap-1 justify-center">
-						<p className="font-semibold">{mostRecentWeight}</p>
-						<p>lb</p>
+					<div>
+						<p className="mb-2">{lostThisWeek} lb lost this week</p>
+						<h1 className="text-5xl font-bold">{thisWeeksDeficit}</h1>
+						<p>Behind by {offTargetBy} calories</p>
+						<p className="mt-2">
+							<span>{dailyProgressToCatchUpByDate} </span>
+							calories to catch up in {daysToCatchUp} days
+						</p>
 					</div>
 				</div>
-				<div>
-					<p>projected weight</p>
-					<div className="flex gap-1 justify-center">
-						<p className="font-semibold">{estimatedLbsLost}</p>
-						<p>lb</p>
+				<div className="mt-4">
+					<div className="flex gap-2 justify-between">
+						<p>weigh in</p>
+						<div className="flex gap-1 justify-center">
+							<p className="font-semibold">{mostRecentWeight}</p>
+							<p>lb</p>
+						</div>
+					</div>
+					<div className="flex gap-2 justify-between">
+						<p>projected</p>
+						<div className="flex gap-1 justify-center">
+							<p className="font-semibold">{estimatedLbsLost}</p>
+							<p>lb</p>
+						</div>
 					</div>
 				</div>
 			</div>
 			<button
-				className="p-4 bg-black text-white font-semibold mt-4 w-full"
+				className="p-4 bg-black text-white font-semibold my-4"
 				onClick={() => navigate("/data/new-entry")}
 			>
 				Log an entry
 			</button>
+			<div>{logEntries()}</div>
 		</div>
 	);
 }

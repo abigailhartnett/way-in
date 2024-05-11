@@ -9,25 +9,25 @@ import AddDataEntry from "./pages/addDataEntry";
 function App() {
 	const [fetchError, setFetchError] = useState(null);
 	const [currentUser, setCurrentUser] = useState(null);
-	const [journalEntry, setJournalEntry] = useState(null);
+	const [journalEntries, setJournalEntries] = useState(null);
 	const [users, setUsers] = useState(null);
 
 	useEffect(() => {
-		const fetchJournalEntry = async () => {
+		const fetchJournalEntries = async () => {
 			const { data, error } = await supabase.from("journal").select();
 
 			if (error) {
 				setFetchError("Could not fetch data");
-				setJournalEntry(null);
+				setJournalEntries(null);
 				console.log(fetchError, error);
 			}
 			if (data) {
-				setJournalEntry(data);
+				setJournalEntries(data);
 				setFetchError(null);
 			}
 		};
 
-		fetchJournalEntry();
+		fetchJournalEntries();
 
 		const fetchUsers = async () => {
 			const { data, error } = await supabase.from("users").select();
@@ -51,7 +51,7 @@ function App() {
 		setCurrentUser(user);
 	}, [users]);
 
-	if (!journalEntry || !users) {
+	if (!journalEntries || !users) {
 		return <div>Loading...</div>;
 	}
 
@@ -61,15 +61,15 @@ function App() {
 				<Route
 					path="/"
 					element={
-						<Home journalEntry={journalEntry} currentUser={currentUser} />
+						<Home journalEntries={journalEntries} currentUser={currentUser} />
 					}
 				/>
 				<Route
 					path="/data"
 					element={
 						<Data
-							journalEntry={journalEntry}
-							setJournalEntry={setJournalEntry}
+							journalEntries={journalEntries}
+							setJournalEntries={setJournalEntries}
 							currentUser={currentUser}
 						/>
 					}
@@ -79,8 +79,8 @@ function App() {
 					element={
 						<AddDataEntry
 							currentUser={currentUser}
-							journalEntry={journalEntry}
-							setJournalEntry={setJournalEntry}
+							journalEntries={journalEntries}
+							setJournalEntries={setJournalEntries}
 						/>
 					}
 				/>

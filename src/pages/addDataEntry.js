@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import supabase from "../config/supabaseClient";
 import { useNavigate } from "react-router-dom";
 
-function AddDataEntry({ journalEntry, currentUser }) {
+function AddDataEntry({ journalEntries, currentUser }) {
 	const navigate = useNavigate();
 	const [formError, setFormError] = useState(null);
 	const [successMessage, setSuccessMessage] = useState("");
@@ -14,9 +14,9 @@ function AddDataEntry({ journalEntry, currentUser }) {
 	// find user's most recent weight entry
 	// Note: consider moving to top level, since this is shared?
 	// Or create a "userdata" context to store this information
-	const dateEntries = journalEntry.map((entry) => entry.dateLogged);
+	const dateEntries = journalEntries.map((entry) => entry.dateLogged);
 	const mostRecentDate = dateEntries.sort().reverse()[0];
-	const mostRecentWeight = journalEntry.find(
+	const mostRecentWeight = journalEntries.find(
 		(entry) => entry.dateLogged === mostRecentDate
 	).weightEntry;
 
@@ -62,12 +62,12 @@ function AddDataEntry({ journalEntry, currentUser }) {
 		}
 	};
 
-	if (!journalEntry || !currentUser) {
+	if (!journalEntries || !currentUser) {
 		return <div>Loading...</div>;
 	}
 
 	return (
-		<div className="m-4">
+		<div className="m-4 max-w-md">
 			{/* Note: Lay all this out with grid */}
 			<h1 className="mb-8 text-2xl font-bold">Add Data Entry</h1>
 			<form onSubmit={handleSubmit}>
