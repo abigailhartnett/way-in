@@ -159,7 +159,7 @@ function Home({ journalEntries, currentUser }) {
 
 	return (
 		<div className="m-4 max-w-md">
-			<div className="flex">
+			<div className="flex justify-between">
 				<div>
 					<div>
 						<p className="mb-2">{lostThisWeek} lb lost this week</p>
