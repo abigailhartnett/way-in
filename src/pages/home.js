@@ -59,12 +59,21 @@ function Home({ journalEntries, currentUser }) {
 	const startingWeight = currentUser?.startingWeight;
 
 	// find user's most recent weight entry
-	const dateEntries = journalEntries.map((entry) => entry.dateLogged);
-	const mostRecentDate = dateEntries.sort().reverse()[0];
-	const mostRecentWeight = journalEntries.find(
-		(entry) => entry.dateLogged === mostRecentDate
-	).weightEntry;
+	const mostRecentJournalEntries = journalEntries
+		.filter(
+			(entry) =>
+				entry.dateLogged >= thisWeek[0] &&
+				entry.dateLogged <= thisWeek[thisWeek.length - 1]
+		)
+		.sort();
 
+	const averageWeight =
+		mostRecentJournalEntries
+			.slice(0, 7)
+			.map((entry) => entry.weightEntry)
+			.reduce((acc, curr) => acc + curr, 0) / mostRecentJournalEntries.length;
+
+	const averageWeightRounded = Math.round(averageWeight * 100) / 100;
 	// find user's goal weight
 	const goalWeight = currentUser?.goalWeight;
 
@@ -109,9 +118,13 @@ function Home({ journalEntries, currentUser }) {
 	// find user's current progress in lbs (based on calorie deficit)
 	const currentProgressLbs = Math.round((currentProgress * 100) / 3500) / 100;
 
-	// find user's estimated lbs lost (based on calorie deficit)
-	const estimatedLbsLost =
+	// find user's projected lbs lost (based on calorie deficit)
+	const projectedLbsLost =
 		Math.round((startingWeight - currentProgressLbs) * 100) / 100;
+
+	// estimated weight loss
+	const estimatedWeightLoss =
+		Math.round((startingWeight - averageWeightRounded) * 100) / 100;
 
 	const thisWeeksDeficit = thisWeeksEntries
 		.map((entry) => entry.deficitEntry)
@@ -173,16 +186,24 @@ function Home({ journalEntries, currentUser }) {
 				</div>
 				<div className="mt-4">
 					<div className="flex gap-2 justify-between">
-						<p>weigh in</p>
+						<p>projected</p>
 						<div className="flex gap-1 justify-center">
-							<p className="font-semibold">{mostRecentWeight}</p>
+							<p className="font-semibold">{projectedLbsLost}</p>
 							<p>lb</p>
 						</div>
 					</div>
 					<div className="flex gap-2 justify-between">
-						<p>projected</p>
+						<p>average</p>
 						<div className="flex gap-1 justify-center">
-							<p className="font-semibold">{estimatedLbsLost}</p>
+							<p className="font-semibold">{averageWeightRounded}</p>
+							<p>lb</p>
+						</div>
+					</div>
+
+					<div className="flex gap-2 justify-between">
+						<p>estimated</p>
+						<div className="flex gap-1 justify-center">
+							<p className="font-semibold">{estimatedWeightLoss}</p>
 							<p>lb</p>
 						</div>
 					</div>
