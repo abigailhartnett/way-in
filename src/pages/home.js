@@ -59,13 +59,11 @@ function Home({ journalEntries, currentUser }) {
 	const startingWeight = currentUser?.startingWeight;
 
 	// find user's most recent weight entry
+
 	const mostRecentJournalEntries = journalEntries
-		.filter(
-			(entry) =>
-				entry.dateLogged >= thisWeek[0] &&
-				entry.dateLogged <= thisWeek[thisWeek.length - 1]
-		)
-		.sort();
+		.filter((entry) => entry.dateLogged)
+		.sort((a, b) => new Date(b.dateLogged) - new Date(a.dateLogged))
+		.slice(0, 7);
 
 	const averageWeight =
 		mostRecentJournalEntries
@@ -184,7 +182,8 @@ function Home({ journalEntries, currentUser }) {
 						</p>
 					</div>
 				</div>
-				<div className="mt-4">
+				<div>
+					<div>Weight statistics</div>
 					<div className="flex gap-2 justify-between">
 						<p>projected</p>
 						<div className="flex gap-1 justify-center">
@@ -199,9 +198,8 @@ function Home({ journalEntries, currentUser }) {
 							<p>lb</p>
 						</div>
 					</div>
-
 					<div className="flex gap-2 justify-between">
-						<p>estimated</p>
+						<p>estimated loss</p>
 						<div className="flex gap-1 justify-center">
 							<p className="font-semibold">{estimatedWeightLoss}</p>
 							<p>lb</p>
@@ -215,6 +213,11 @@ function Home({ journalEntries, currentUser }) {
 			>
 				Log an entry
 			</button>
+			<div className="flex justify-between">
+				<div className="font-semibold">Date</div>
+				<div className="font-semibold">Weigh in</div>
+				<div className="font-semibold">Deficit</div>
+			</div>
 			<div>{logEntries()}</div>
 		</div>
 	);
