@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { useWindowSize } from "../hooks/useWindowSize";
 import Menu from "../components/Menu";
 
 function Home({ journalEntries, currentUser }) {
@@ -9,15 +10,7 @@ function Home({ journalEntries, currentUser }) {
 
 	const daysToCatchUp = currentUser?.daysToCatchUp;
 
-	const divRef = useRef();
-
-	// Note -- probably not the best way to do this
-	useEffect(() => {
-		if (divRef.current) {
-			divRef.current.style.height = `${window.innerHeight}px`;
-		}
-	}, [divRef]);
-	//
+	const windowSize = useWindowSize();
 
 	useMemo(() => {
 		setCurrentDay(new Date());
@@ -155,10 +148,12 @@ function Home({ journalEntries, currentUser }) {
 		return <div>Loading...</div>;
 	}
 
+	console.log(windowSize);
+
 	return (
 		<div
-			ref={divRef}
-			className="m-4 max-w-md flex flex-col items-center justify-between h-screen"
+			className="m-4 max-w-md flex flex-col items-center justify-between"
+			style={{ height: `${windowSize.height}px` }}
 		>
 			<div>
 				<div className="text-center">
