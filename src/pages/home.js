@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import Menu from "../components/Menu";
 
 function Home({ journalEntries, currentUser }) {
@@ -9,6 +9,14 @@ function Home({ journalEntries, currentUser }) {
 
 	const daysToCatchUp = currentUser?.daysToCatchUp;
 
+	const divRef = useRef();
+
+	// Note -- probably not the best way to do this
+	useEffect(() => {
+		if (divRef.current) {
+			divRef.current.style.height = `${window.innerHeight}px`;
+		}
+	}, []);
 	//
 
 	useMemo(() => {
@@ -148,7 +156,10 @@ function Home({ journalEntries, currentUser }) {
 	}
 
 	return (
-		<div className="m-4 max-w-md flex flex-col items-center justify-between h-screen">
+		<div
+			ref={divRef}
+			className="m-4 max-w-md flex flex-col items-center justify-between h-screen"
+		>
 			<div>
 				<div className="text-center">
 					<p>Today's goal</p>
