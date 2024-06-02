@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import Menu from "../components/Menu";
 
 function Home({ journalEntries, currentUser }) {
-	const navigate = useNavigate();
-
 	const [isLoading, setIsLoading] = useState(true);
 	const [thisWeek, setThisWeek] = useState([]);
 	const [thisWeeksEntries, setThisWeeksEntries] = useState([]);
 	const [currentDay, setCurrentDay] = useState(new Date());
 
 	const [daysToCatchUp] = useState(7);
+
+	//
 
 	useMemo(() => {
 		setCurrentDay(new Date());
@@ -39,6 +39,8 @@ function Home({ journalEntries, currentUser }) {
 		getThisWeek();
 	}, [currentDay]);
 
+	//
+
 	useEffect(() => {
 		const getThisWeeksEntries = () => {
 			const thisWeeksEntries = thisWeek
@@ -54,6 +56,8 @@ function Home({ journalEntries, currentUser }) {
 
 		setIsLoading(false);
 	}, [thisWeek, journalEntries]);
+
+	//
 
 	// find user's starting weight
 	const startingWeight = currentUser?.startingWeight;
@@ -101,28 +105,11 @@ function Home({ journalEntries, currentUser }) {
 	// find user's ideal daily deficit
 	const idealDailyDeficit = Math.round(totalCaloriesToLose / totalDaysToLose);
 
-	// find user's progressProjection
-	const progressProjection = Math.round(
-		(totalCaloriesToLose / totalDaysToLose) * daysSinceStart
-	);
-
-	// find user's current progress
-	const currentProgress = journalEntries
-		.map((entry) => entry.deficitEntry)
-		.reduce((acc, curr) => {
-			return acc + curr;
-		}, 0);
-
-	// find user's current progress in lbs (based on calorie deficit)
-	const currentProgressLbs = Math.round((currentProgress * 100) / 3500) / 100;
-
-	// find user's projected lbs lost (based on calorie deficit)
-	const projectedLbsLost =
-		Math.round((startingWeight - currentProgressLbs) * 100) / 100;
-
 	// estimated weight loss
 	const estimatedWeightLoss =
 		Math.round((startingWeight - averageWeightRounded) * 100) / 100;
+
+	//
 
 	const thisWeeksDeficit = thisWeeksEntries
 		.map((entry) => entry.deficitEntry)
@@ -132,6 +119,18 @@ function Home({ journalEntries, currentUser }) {
 
 	// find user's progress in lb for this week (based on calorie deficit)
 	const lostThisWeek = Math.round((thisWeeksDeficit * 100) / 3500) / 100;
+
+	// find user's progressProjection
+	const progressProjection = Math.round(
+		(totalCaloriesToLose / totalDaysToLose) * daysSinceStart
+	);
+
+	// find user's current progress -- move into hook
+	const currentProgress = journalEntries
+		.map((entry) => entry.deficitEntry)
+		.reduce((acc, curr) => {
+			return acc + curr;
+		}, 0);
 
 	// find difference between current progress and progress projection
 	// negative number means "behind" and positive number means "ahead"
@@ -144,62 +143,25 @@ function Home({ journalEntries, currentUser }) {
 		offTargetBy / daysToCatchUp + idealDailyDeficit
 	);
 
-	const sortedEntries = journalEntries.sort((a, b) => {
-		const dateA = new Date(a.dateLogged);
-		const dateB = new Date(b.dateLogged);
-
-		return dateB - dateA;
-	});
-
-	const logEntries = () => {
-		return sortedEntries.map((entry) => (
-			<div
-				key={entry.id}
-				className="flex justify-between border-b border-t-0 border-r-0 border-l-0 solid border-black py-2"
-			>
-				<div>{entry.dateLogged}</div>
-				<div>{entry.weightEntry}</div>
-				<div>{entry.deficitEntry}</div>
-			</div>
-		));
-	};
-
 	if (isLoading) {
 		return <div>Loading...</div>;
 	}
 
 	return (
-		<div className="m-4 max-w-md">
-			<div className="flex justify-between">
-				<div>
-					<div>
-						<p className="mb-2">{lostThisWeek} lb lost this week</p>
-						<h1 className="text-5xl font-bold">{thisWeeksDeficit}</h1>
-						<p>Behind by {offTargetBy} calories</p>
-						<p className="mt-2">
-							<span>{dailyProgressToCatchUpByDate} </span>
-							calories to catch up in {daysToCatchUp} days
-						</p>
-					</div>
+		<div className="m-4 max-w-md flex flex-col items-center justify-between h-screen">
+			<div>
+				<div className="text-center">
+					<p>Today's goal</p>
+					<h1 className="text-5xl font-bold">{dailyProgressToCatchUpByDate}</h1>
+					<p>calorie deficit</p>
 				</div>
-				<div>
-					<div>Weight statistics</div>
-					<div className="flex gap-2 justify-between">
-						<p>projected</p>
-						<div className="flex gap-1 justify-center">
-							<p className="font-semibold">{projectedLbsLost}</p>
-							<p>lb</p>
-						</div>
+				<div className="flex mt-8 gap-8">
+					<div className="text-center">
+						<p>Lost this week</p>
+						<p className="font-semibold">{lostThisWeek} lb</p>
 					</div>
-					<div className="flex gap-2 justify-between">
-						<p>average</p>
-						<div className="flex gap-1 justify-center">
-							<p className="font-semibold">{averageWeightRounded}</p>
-							<p>lb</p>
-						</div>
-					</div>
-					<div className="flex gap-2 justify-between">
-						<p>estimated loss</p>
+					<div className="text-center">
+						<p>Total lost</p>
 						<div className="flex gap-1 justify-center">
 							<p className="font-semibold">{estimatedWeightLoss}</p>
 							<p>lb</p>
@@ -207,18 +169,7 @@ function Home({ journalEntries, currentUser }) {
 					</div>
 				</div>
 			</div>
-			<button
-				className="p-4 bg-black text-white font-semibold my-4"
-				onClick={() => navigate("/data/new-entry")}
-			>
-				Log an entry
-			</button>
-			<div className="flex justify-between">
-				<div className="font-semibold">Date</div>
-				<div className="font-semibold">Weigh in</div>
-				<div className="font-semibold">Deficit</div>
-			</div>
-			<div>{logEntries()}</div>
+			<Menu />
 		</div>
 	);
 }

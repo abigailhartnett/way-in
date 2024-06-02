@@ -3,8 +3,10 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import supabase from "./config/supabaseClient";
 import Home from "./pages/home";
-import Data from "./pages/data";
+import Journal from "./pages/journal";
 import AddDataEntry from "./pages/addDataEntry";
+import Settings from "./pages/settings";
+import Data from "./pages/data";
 
 function App() {
 	const [fetchError, setFetchError] = useState(null);
@@ -65,9 +67,9 @@ function App() {
 					}
 				/>
 				<Route
-					path="/data"
+					path="/journal"
 					element={
-						<Data
+						<Journal
 							journalEntries={journalEntries}
 							setJournalEntries={setJournalEntries}
 							currentUser={currentUser}
@@ -78,6 +80,26 @@ function App() {
 					path="/data/new-entry"
 					element={
 						<AddDataEntry
+							currentUser={currentUser}
+							journalEntries={journalEntries}
+							setJournalEntries={setJournalEntries}
+						/>
+					}
+				/>
+				<Route
+					path="/settings"
+					element={
+						<Settings
+							currentUser={currentUser}
+							journalEntries={journalEntries}
+							setJournalEntries={setJournalEntries}
+						/>
+					}
+				/>
+				<Route
+					path="/data"
+					element={
+						<Data
 							currentUser={currentUser}
 							journalEntries={journalEntries}
 							setJournalEntries={setJournalEntries}

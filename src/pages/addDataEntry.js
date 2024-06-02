@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import supabase from "../config/supabaseClient";
 import { useNavigate } from "react-router-dom";
+import Menu from "../components/Menu";
 
 function AddDataEntry({ journalEntries, currentUser }) {
 	const navigate = useNavigate();
@@ -67,54 +68,57 @@ function AddDataEntry({ journalEntries, currentUser }) {
 	}
 
 	return (
-		<div className="m-4 max-w-md">
+		<div className="m-4 flex max-w-md flex-col items-center justify-between h-screen">
 			{/* Note: Lay all this out with grid */}
-			<h1 className="mb-8 text-2xl font-bold">Add Data Entry</h1>
-			<form onSubmit={handleSubmit}>
-				<div className="my-2 flex items-center gap-2">
-					<label htmlFor="dateLogged">Date</label>
-					<input
-						type="date"
-						id="dateLogged"
-						value={dateLogged}
-						onChange={(e) => setDateLogged(e.target.value)}
-						className="border-2 border-gray-300 rounded-md p-2 w-full"
-					/>
-				</div>
-				<div className="my-2 flex items-center gap-2">
-					<label htmlFor="weightEntry">Weight</label>
-					<input
-						type="number"
-						id="weightEntry"
-						value={weightEntry}
-						onChange={(e) => setWeightEntry(e.target.value)}
-						className="border-2 border-gray-300 rounded-md p-2 w-full"
-					/>
-				</div>
-				<div className="my-2 flex items-center gap-2">
-					<label htmlFor="deficitEntry">DeficitEntry</label>
-					<input
-						type="number"
-						id="deficitEntry"
-						value={deficitEntry}
-						onChange={(e) => setDeficitEntry(e.target.value)}
-						className="border-2 border-gray-300 rounded-md p-2 w-full"
-					/>
-				</div>
-				<div>
-					{formError && <p className="text-red-500">{formError}</p>}
-					{successMessage && <p>{successMessage}</p>}
-				</div>
-				<button className="p-4 bg-black text-white font-semibold mt-2 w-full">
-					Submit
+			<div>
+				<h1 className="mb-8 text-5xl font-bold">Add Data Entry</h1>
+				<form onSubmit={handleSubmit}>
+					<div className="my-2 flex items-center gap-2">
+						<label htmlFor="dateLogged">Date</label>
+						<input
+							type="date"
+							id="dateLogged"
+							value={dateLogged}
+							onChange={(e) => setDateLogged(e.target.value)}
+							className="border-2 border-gray-300 rounded-md p-2 w-full"
+						/>
+					</div>
+					<div className="my-2 flex items-center gap-2">
+						<label htmlFor="weightEntry">Weight</label>
+						<input
+							type="number"
+							id="weightEntry"
+							value={weightEntry}
+							onChange={(e) => setWeightEntry(e.target.value)}
+							className="border-2 border-gray-300 rounded-md p-2 w-full"
+						/>
+					</div>
+					<div className="my-2 flex items-center gap-2">
+						<label htmlFor="deficitEntry">DeficitEntry</label>
+						<input
+							type="number"
+							id="deficitEntry"
+							value={deficitEntry}
+							onChange={(e) => setDeficitEntry(e.target.value)}
+							className="border-2 border-gray-300 rounded-md p-2 w-full"
+						/>
+					</div>
+					<div>
+						{formError && <p className="text-red-500">{formError}</p>}
+						{successMessage && <p>{successMessage}</p>}
+					</div>
+					<button className="p-4 bg-black text-white font-semibold mt-2 w-full">
+						Submit
+					</button>
+				</form>
+				<button
+					className="p-4 bg-gray-300 font-semibold mt-4 w-full"
+					onClick={() => navigate("/")}
+				>
+					Back
 				</button>
-			</form>
-			<button
-				className="p-4 bg-gray-300 font-semibold mt-4 w-full"
-				onClick={() => navigate("/")}
-			>
-				Back
-			</button>
+			</div>
+			<Menu />
 		</div>
 	);
 }
