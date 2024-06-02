@@ -16,7 +16,7 @@ function Home({ journalEntries, currentUser }) {
 		if (divRef.current) {
 			divRef.current.style.height = `${window.innerHeight}px`;
 		}
-	}, []);
+	}, [divRef]);
 	//
 
 	useMemo(() => {
