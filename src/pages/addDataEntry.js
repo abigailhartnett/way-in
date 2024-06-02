@@ -23,8 +23,6 @@ function AddDataEntry({ journalEntries, currentUser }) {
 
 	const [weightEntry, setWeightEntry] = useState(mostRecentWeight);
 
-	console.log(weightEntry);
-
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 

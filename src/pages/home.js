@@ -7,7 +7,7 @@ function Home({ journalEntries, currentUser }) {
 	const [thisWeeksEntries, setThisWeeksEntries] = useState([]);
 	const [currentDay, setCurrentDay] = useState(new Date());
 
-	const [daysToCatchUp] = useState(7);
+	const daysToCatchUp = currentUser?.daysToCatchUp;
 
 	//
 
