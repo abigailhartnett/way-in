@@ -148,8 +148,6 @@ function Home({ journalEntries, currentUser }) {
 		return <div>Loading...</div>;
 	}
 
-	console.log(windowSize);
-
 	return (
 		<div
 			className="m-4 max-w-md flex flex-col items-center justify-between"

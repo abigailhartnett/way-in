@@ -1,7 +1,10 @@
 import React from "react";
+import { useWindowSize } from "../hooks/useWindowSize";
 import Menu from "../components/Menu";
 
 function Data({ journalEntries, currentUser }) {
+	const windowSize = useWindowSize();
+
 	// find user's starting weight
 	const startingWeight = currentUser?.startingWeight;
 
@@ -39,7 +42,10 @@ function Data({ journalEntries, currentUser }) {
 		Math.round((startingWeight - averageWeightRounded) * 100) / 100;
 
 	return (
-		<div className="m-4 max-w-md flex flex-col items-center justify-between h-screen">
+		<div
+			className="m-4 max-w-md flex flex-col items-center justify-between"
+			style={{ height: `${windowSize.height}px` }}
+		>
 			<div>
 				<h1 className="text-5xl font-bold mb-8">Statistics</h1>
 				<div className="flex gap-2 justify-between">

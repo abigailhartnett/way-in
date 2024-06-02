@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import supabase from "../config/supabaseClient";
+import { useWindowSize } from "../hooks/useWindowSize";
 import Menu from "../components/Menu";
 
 function Data({ journalEntries, setJournalEntries, currentUser }) {
@@ -11,6 +12,8 @@ function Data({ journalEntries, setJournalEntries, currentUser }) {
 	const [dateLogged, setDateLogged] = useState(
 		new Date().toISOString().split("T")[0]
 	);
+
+	const windowSize = useWindowSize();
 
 	const fetchEntries = async () => {
 		const { data, error } = await supabase
@@ -132,7 +135,10 @@ function Data({ journalEntries, setJournalEntries, currentUser }) {
 	};
 
 	return (
-		<div className="m-4 flex max-w-md flex-col items-center justify-between h-screen">
+		<div
+			className="m-4 flex max-w-md flex-col items-center justify-between"
+			style={{ height: `${windowSize.height}px` }}
+		>
 			<h1 className="text-5xl font-bold mb-8">Journal</h1>
 			<div className="flex justify-between w-full">
 				<div className="font-semibold">Date</div>

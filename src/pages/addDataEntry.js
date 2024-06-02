@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import supabase from "../config/supabaseClient";
+import { useWindowSize } from "../hooks/useWindowSize";
 import { useNavigate } from "react-router-dom";
 import Menu from "../components/Menu";
 
@@ -11,6 +12,8 @@ function AddDataEntry({ journalEntries, currentUser }) {
 	const [dateLogged, setDateLogged] = useState(
 		new Date().toISOString().split("T")[0]
 	);
+
+	const windowSize = useWindowSize();
 
 	// find user's most recent weight entry
 	// Note: consider moving to top level, since this is shared?
@@ -66,7 +69,10 @@ function AddDataEntry({ journalEntries, currentUser }) {
 	}
 
 	return (
-		<div className="m-4 flex max-w-md flex-col items-center justify-between h-screen">
+		<div
+			className="m-4 flex max-w-md flex-col items-center justify-between"
+			style={{ height: `${windowSize.height}px` }}
+		>
 			{/* Note: Lay all this out with grid */}
 			<div>
 				<h1 className="mb-8 text-5xl font-bold">Add Data Entry</h1>

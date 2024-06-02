@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import supabase from "../config/supabaseClient";
+import { useWindowSize } from "../hooks/useWindowSize";
 import Menu from "../components/Menu";
 
 function Settings({ currentUser }) {
+	const windowSize = useWindowSize();
+
 	const [daysToCatchUp, setDaysToCatchUp] = useState(
 		currentUser?.daysToCatchUp
 	);
@@ -44,7 +47,10 @@ function Settings({ currentUser }) {
 	};
 
 	return (
-		<div className="m-4 flex max-w-md flex-col items-center justify-between h-screen">
+		<div
+			className="m-4 flex max-w-md flex-col items-center justify-between"
+			style={{ height: `${windowSize.height}px` }}
+		>
 			<div className="flex flex-col">
 				<h1 className="text-5xl font-bold mb-8">Settings</h1>
 				<form onSubmit={handleSubmit}>
