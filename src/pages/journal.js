@@ -82,38 +82,40 @@ function Data({ journalEntries, setJournalEntries, currentUser }) {
 				<form
 					onSubmit={(e) => handleSubmit(e, entry.id)}
 					key={entry.id}
-					className="flex w-full justify-between items-center border-b border-t-0 border-r-0 border-l-0 solid border-black py-2 gap-2"
+					className="flex justify-between items-center border-b border-t-0 border-r-0 border-l-0 solid border-black py-2 gap-2"
 				>
-					<input
-						label="Date logged"
-						type="date"
-						id="dateLogged"
-						value={dateLogged}
-						onChange={(e) =>
-							setDateLogged(
-								new Date(e.target.value).toISOString().split("T")[0]
-							)
-						}
-						className="text-sm w-20"
-					/>
-					<input
-						label="Weight"
-						type="number"
-						id="weightEntry"
-						value={weightEntry}
-						onChange={(e) => setWeightEntry(e.target.value)}
-						className="text-sm w-20"
-					/>
-					<input
-						label="Deficit"
-						type="number"
-						id="deficitEntry"
-						value={deficitEntry}
-						onChange={(e) => setDeficitEntry(e.target.value)}
-						className="text-sm w-20"
-					/>
+					<div className="w-full flex justify-center gap-8">
+						<input
+							label="Date logged"
+							type="date"
+							id="dateLogged"
+							value={dateLogged}
+							onChange={(e) =>
+								setDateLogged(
+									new Date(e.target.value).toISOString().split("T")[0]
+								)
+							}
+							className="text-sm w-20"
+						/>
+						<input
+							label="Weight"
+							type="number"
+							id="weightEntry"
+							value={weightEntry}
+							onChange={(e) => setWeightEntry(e.target.value)}
+							className="text-sm w-20"
+						/>
+						<input
+							label="Deficit"
+							type="number"
+							id="deficitEntry"
+							value={deficitEntry}
+							onChange={(e) => setDeficitEntry(e.target.value)}
+							className="text-sm w-20"
+						/>
+					</div>
 					<button type="submit" className="text-sm">
-						Update
+						<span class="material-symbols-outlined">check</span>
 					</button>
 				</form>
 			) : (
@@ -136,16 +138,18 @@ function Data({ journalEntries, setJournalEntries, currentUser }) {
 
 	return (
 		<div
-			className="m-4 flex max-w-md flex-col items-center justify-between"
+			className="m-4 w-full flex max-w-lg flex-col items-center justify-between"
 			style={{ height: `${windowSize.height}px` }}
 		>
-			<h1 className="text-5xl font-bold mb-8">Journal</h1>
-			<div className="flex justify-between w-full">
-				<div className="font-semibold">Date</div>
-				<div className="font-semibold">Weigh in</div>
-				<div className="font-semibold">Deficit</div>
+			<div className="w-full">
+				<h1 className="text-5xl font-bold mb-8 text-center">Journal</h1>
+				<div className="flex justify-between w-full">
+					<div className="font-semibold">Date</div>
+					<div className="font-semibold">Weigh in</div>
+					<div className="font-semibold">Deficit</div>
+				</div>
+				<div className="w-full overflow-y-scroll">{loggedEntries()}</div>
 			</div>
-			<div className="w-full overflow-y-scroll">{loggedEntries()}</div>
 			<Menu />
 		</div>
 	);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useWindowSize } from "../hooks/useWindowSize";
 import Menu from "../components/Menu";
+import ProgressChart from "../components/progressChart";
 
 function Home({ journalEntries, currentUser }) {
 	const [isLoading, setIsLoading] = useState(true);
@@ -39,8 +40,6 @@ function Home({ journalEntries, currentUser }) {
 
 		getThisWeek();
 	}, [currentDay]);
-
-	//
 
 	useEffect(() => {
 		const getThisWeeksEntries = () => {
@@ -144,6 +143,18 @@ function Home({ journalEntries, currentUser }) {
 		offTargetBy / daysToCatchUp + idealDailyDeficit
 	);
 
+	// Value for progress circle: how close you are to your 5lb goal
+	const totalLost = startingWeight - averageWeightRounded;
+	const lbToLose = 5;
+
+	const progress = Math.round((totalLost / lbToLose) * 100);
+
+	console.log({
+		startingWeight: startingWeight,
+		goalWeight: goalWeight,
+		progress: progress,
+	});
+
 	if (isLoading) {
 		return <div>Loading...</div>;
 	}
@@ -154,11 +165,15 @@ function Home({ journalEntries, currentUser }) {
 			style={{ height: `${windowSize.height}px` }}
 		>
 			<div>
-				<div className="text-center">
-					<p>Today's goal</p>
-					<h1 className="text-5xl font-bold">{dailyProgressToCatchUpByDate}</h1>
-					<p>calorie deficit</p>
-				</div>
+				<ProgressChart progress={progress}>
+					<div className="text-center">
+						<p>Today's goal</p>
+						<h1 className="text-5xl font-bold">
+							{dailyProgressToCatchUpByDate}
+						</h1>
+						<p>calorie deficit</p>
+					</div>
+				</ProgressChart>
 				<div className="flex mt-8 gap-8">
 					<div className="text-center">
 						<p>Lost this week</p>
